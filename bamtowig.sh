@@ -1,25 +1,32 @@
 #!/bin/bash
 
 # data shortcuts
-BAMFOLDER="/mnt/store1/rawdata/fastq/Suzana/bam"
-BEDFOLDER="/mnt/store1/rawdata/fastq/Suzana/bam/bed"
-WIGFOLDER="/mnt/store1/rawdata/fastq/Suzana/bam/wig"
-
+BAMFOLDER="/mnt/store1/rawdata/fastq/Suzana/BAM"
+BEDFOLDER="/mnt/store1/rawdata/fastq/Suzana/BAM/BED"
+WIGFOLDER="/mnt/store1/rawdata/fastq/Suzana/BAM/WIG"
 
 # tool shortcuts - NB bowtie needs to be in PATH because it isn't specified in script
-BAMtoBED="/home/rmgzshd/bedtools-2.17.0/bin/bamToBed"
-BEDGtoBW="/home/rmgzshd/UCSCtools/bedGraphToBigWig"
+BEDTOOLS="/home/rmgzshd/bedtools-2.17.0/bin/bedtools"
+BEDGBW="/home/rmgzshd/UCSCtools/bedGraphToBigWig"
 
-export BAMFOLDER; export BEDFOLDER; export WIGFOLDER; export BAMtoBED; export BEDtoBW;
+# reference
+CHROMSIZES="/home/rmgzshd/UCSCtools/hg19.chrom.sizes"
+
+export BAMFOLDER; export BEDFOLDER; export WIGFOLDER; export BEDTOOLS; export BEDGBW;
 
  
 BAMS=$BAMFOLDER/*.bam
 for bam in $BAMS
 do
 	prefix=$(echo ${bam} | sed 's/.bam//')
-	$BAMtoBED genomecov --ibam $bam -bg > $prefix.bedGraph  
+
+	$BEDTOOLS genomecov -ibam $bam -bg > $prefix.bedGraph
+	$BEDGBW $prefix.bedGraph $CHROMSIZES $prefix.bigWig
 
 done
-rm $FQFOLDER/*.zip
+mkdir -p $BEDFOLDER
+mkdir -p $WIGFOLDER
+mv *bedGraph $BEDFOLDER
+mv *bigWig $WIGFOLDER
 
 
