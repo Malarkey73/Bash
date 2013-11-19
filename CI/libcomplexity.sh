@@ -7,20 +7,29 @@ BAMFOLDER="/mnt/store1/rawdata/fastq/SA1SA2/BAM"
 C_CURVE="/home/rmgzshd/preseq-0.0.4/c_curve"
 LC_EXTRAP="/home/rmgzshd/preseq-0.0.4/lc_extrap"
 PPCQTOOLS="/home/rmgzshd/phantompeakqualtools/run_spp.R"
+CHIPQCPLOTS="/home/rmgzshd/RScripts/ChIPQCplots.R"
 
-export BAMFOLDER; export C_CURVE; export LC_EXTRAP
+export BAMFOLDER; export C_CURVE; export LC_EXTRAP; export CHIPQCPLOTS
 
-mkdir libcomplexity 
 
-for bam in $BAMFOLDER/*.bam
+# we compute the cross correlation, the lib complexity and estimate
+# extra sequencing required and ... 
+
+for bam in $BAMFOLDER/*.sorted.bam
 do
-	prefix=$(echo ${bam} | sed 's/.bam//')
+	prefix=$(echo ${bam} | sed 's/.sorted.bam//')
 	$C_CURVE -B $bam -o $prefix.ccurve.txt
 	$LC_EXTRAP -B $bam -o $prefix.lcextrap.txt
 	Rscript $PPCQTOOLS -c=$bam -savp -out=$prefix.ppcq.txt
-# Rscript /home/rmgzshd/phantompeakqualtools/run_spp.R -c=SRR445739.sorted.bam -savp -out=SRR445739.sorted.ppcq.txt
 done
+
+# the RScript itself should recognise the right files 
+# and loop through converting them to plots (req ggplot2)
+Rscript $CHIPQCPLOTS
+
+#rename 's/.sorted.pdf$/.crosscor.pdf/' *.sorted.pdf
 mkdir -p libcomplexity
-mv $BAMFOLDER/*.ccurve.txt
-mv $BAMFOLDER/*.lcextrap.txt
-mv $BAMFOLDER/*.ppcq.txt
+mv $BAMFOLDER/*.pdf libcomplexity
+mv $BAMFOLDER/*.ccurve.txt libcomplexity
+mv $BAMFOLDER/*.lcextrap.txt libcomplexity
+mv $BAMFOLDER/*.ppcq.txt libcomplexity
