@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # data shortcuts
-BAMFOLDER="/mnt/store1/rawdata/fastq/SA1SA2/BAM"
+BAMFOLDER="/mnt/store1/rawdata/FASTQ/SA1SA2/BAM"
 
 #tools shortcuts
 C_CURVE="/home/rmgzshd/preseq-0.0.4/c_curve"
@@ -20,7 +20,7 @@ do
 	prefix=$(echo ${bam} | sed 's/.sorted.bam//')
 	$C_CURVE -B $bam -o $prefix.ccurve.txt
 	$LC_EXTRAP -B $bam -o $prefix.lcextrap.txt
-	Rscript $PPCQTOOLS -c=$bam -savp -out=$prefix.ppcq.txt
+	Rscript $PPCQTOOLS -c=$bam -savp=$prefix.crosscor.pdf -out=$prefix.ppcq.txt
 done
 
 # the RScript itself should recognise the right files 
@@ -30,6 +30,6 @@ Rscript $CHIPQCPLOTS
 #rename 's/.sorted.pdf$/.crosscor.pdf/' *.sorted.pdf
 mkdir -p libcomplexity
 mv $BAMFOLDER/*.pdf libcomplexity
-mv $BAMFOLDER/*.ccurve.txt libcomplexity
-mv $BAMFOLDER/*.lcextrap.txt libcomplexity
-mv $BAMFOLDER/*.ppcq.txt libcomplexity
+rm $BAMFOLDER/*.ccurve.txt
+rm $BAMFOLDER/*.lcextrap.txt
+rm $BAMFOLDER/*.ppcq.txt
