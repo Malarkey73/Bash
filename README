@@ -1,5 +1,6 @@
-Quite simply the CI folder is for bash scripts that run on my server 
-with ordinary bash headers and usually paths that I use.
+Quite simply the CI folder is for bash scripts that run on my server with ordinary bash headers and usually paths that I use.
 
 Whereas the CS folder has scripts that I (may) run on the HPC CS server.
+
+The RScripts are called by the Bash scripts and (usually) convert data into graphs for convenience.
 
