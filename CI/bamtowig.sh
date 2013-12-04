@@ -1,16 +1,16 @@
 #!/bin/bash
 
 # data shortcuts
-BAMFOLDER="/mnt/store1/rawdata/fastq/Suzana/BAM"
-BEDFOLDER="/mnt/store1/rawdata/fastq/Suzana/BAM/BED"
-WIGFOLDER="/mnt/store1/rawdata/fastq/Suzana/BAM/WIG"
+BAMFOLDER="/mnt/store1/rawdata/FASTQ/SA1SA2/BAM"
+BEDFOLDER="/mnt/store1/rawdata/FASTQ/SA1SA2/BAM/BED"
+WIGFOLDER="/mnt/store1/rawdata/FASTQ/SA1SA2/BAM/WIG"
 
-# tool shortcuts - NB bowtie needs to be in PATH because it isn't specified in script
+# tool shortcuts
 BEDTOOLS="/home/rmgzshd/bedtools-2.17.0/bin/bedtools"
 BEDGBW="/home/rmgzshd/UCSCtools/bedGraphToBigWig"
 
 # reference
-CHROMSIZES="/home/rmgzshd/UCSCtools/hg19.chrom.sizes"
+CHROMSIZES="/home/rmgzshd/UCSCtools/mm10.chrom.sizes"
 
 export BAMFOLDER; export BEDFOLDER; export WIGFOLDER; export BEDTOOLS; export BEDGBW;
 

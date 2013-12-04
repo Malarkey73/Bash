@@ -2,7 +2,7 @@
 
 # data shortcuts
 FQFOLDER="/mnt/store1/rawdata/FASTQ/dogliver"
-BAMFOLDER="/mnt/store1/rawdata/FASTQ/dogliver/BAM"
+
 # reference shortcuts
 GENOME="/mnt/store1/Canis_familiaris/UCSC/canFam3/Sequence/Bowtie2Index/genome"
 GENES="/mnt/store1/Canis_familiaris/UCSC/canFam3/Annotation/Genes/genes.gtf"
@@ -11,7 +11,7 @@ SEQTK="/home/rmgzshd/seqtk/seqtk"
 TOPHAT2="/home/rmgzshd/tophat2/tophat2"
 
 # samtools and bowtie2 are already in my path
-export FQFOLDER; export BAMFOLDER; export GENOME; export GENES; export SEQTK; export TOPHAT2;
+export FQFOLDER; export GENOME; export GENES; export SEQTK; export TOPHAT2;
 
 # This is a basic script to trim, align, convert bam to sam and then sort unpaired reads. To adapt it to you should:
 
@@ -32,15 +32,11 @@ do
         mkdir -p $prefix
         echo "making " $prefix
 
-        # create a fifo for trimmed reads
-        if [[ ! -p $FQFOLDER/R1.fifo ]]; then
-                mkfifo $FQFOLDER/R1.fifo
-        fi
-
+        
         # trim/pipe into tophat2
-        $SEQTK trimfq $fq > R1.fifo & \
+        $SEQTK trimfq $fq > $prefix.trim
         # -p 24 = 24 threads, again piped directly into samtools to convert to bam sorted with no intermediate files
-        tophat2 -p 24 -G $GENES -o $prefix $GENOME $FQFOLDER/R1.fifo
+        tophat2 -p 24 -G $GENES -o $prefix $GENOME $prefix.trim
 done
 
 # tidy up; deleting the temporary fifo
