@@ -1,32 +1,30 @@
 #!/bin/bash
 
-# a sailfish gene index first needs built, e.g. something like:
-#nohup sailfish index -t /mnt/store1/Mus_musculus/gencode.vM1.pc_transcripts.fa -o /mnt/store1/Mus_musculus/sailfishIndex -k 20 &
+SFINDEX="/mnt/store1/Homo_sapiens/Gencode19/sailfish_gene"
+OUTDIR="/mnt/store1/sailfish_results"
 
-#
+export SFINDEX;  export OUTDIR;
 
-#genome shortcuts
-SFINDEX="/mnt/store1/Mus_musculus/sailfishIndex"
-
-# data shortcuts
-FQFOLDER="/mnt/store1/rawdata/FASTQ/mouseliver"
-
-# software
-SAILFISH="/home/rmgzshd/Sailfish/bin/sailfish"
-SEQTK="/home/rmgzshd/seqtk/seqtk"
-
-
-export SFINDEX; export FQFOLDER; export SAILFISH
-
-for fq in $FQFOLDER/*.fastq
+for fq in *R1_001.fastq.gz
 do
-	# get the sample name prefix
-        prefix=$(echo ${fq} | sed 's/.fastq//')
-    $SEQTK trimfq $fq > $prefix.trim    
-done
+        # get the sample name prefix
+        prefix=$(echo ${fq} | sed 's/R1_001.fastq.gz//')
         
-$SAILFISH quant -p 24 -i $SFINDEX -r $FQFOLDER/*.trim -o $FQFOLDER
+        # create a fifo for both R1 and R2 pairs
+        if [[ ! -p MATE1.fifo ]]; then
+                mkfifo MATE1.fifo
+        fi
 
+		if [[ ! -p MATE2.fifo ]]; then
+                mkfifo MATE2.fifo
+        fi
 
+        #decompress the mate1 and 2 into a fifo
+        zcat -c $fq > MATE1.fifo & \
+        zcat -c ${prefix}R2_001.fastq.gz > MATE2.fifo &
 
+        # and stream the fifo into sailfish
+		sailfish quant -i $SFINDEX -l -l "T=PE:O=><:S=U" \
+ 		-1 MATE1.fifo -2 MATE2.fifo -o $OUTDIR/$fq
 
+done 
