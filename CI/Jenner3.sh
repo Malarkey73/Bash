@@ -12,7 +12,7 @@ BEDtools="/home/rmgzshd/bedtools2/bin"
 GBINS="/home/rmgzshd/bedtools2/genomes/hg19.10bpbins.bed"
 
 # make sure child processes see shortcuts too
-export BEDtools; export UCSCtools; export UCSCtools
+export BEDtools; export UCSCtools; export UCSCtools;
 
 
 # script inputs
@@ -37,6 +37,7 @@ fi
 	tee "$ChIP.bed" 																			|
 	wc -l           																			|
 	awk '{print 1000000/$1}')
+	
 	$BEDtools/genomeCoverageBed -bg  -i "$ChIP.bed" -scale $count_pos -g "$Genome.chrom.sizes"  |
 	$BEDtools/mapBed -a $GBINS -b - -c 4 -o mean 												|
 	awk '$4 != "."' >  "$ChIP.bedgraph"
@@ -50,6 +51,7 @@ fi
 	tee "$Input.bed" 																			|
 	wc -l           																			|
 	awk '{print 1000000/$1}')
+	
 	$BEDtools/genomeCoverageBed -bg  -i "$Input.bed" -scale $count_pos -g "$Genome.chrom.sizes" |
 	$BEDtools/mapBed -a $GBINS -b - -c 4 -o mean 												|
 	awk '$4 != "."' >  "$Input.bedgraph"
