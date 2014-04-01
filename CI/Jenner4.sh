@@ -53,7 +53,7 @@ fi
 )&
 
 # have to wait for both to finish
-wait;
+wait
 
 #Run two MACS at same time
 $MACS -t "$Input.bed"  -c "$ChIP.bed" -g $Species --keep-dup=1 -n "$ChIP_10-9" -p 1e-9 &
@@ -61,17 +61,20 @@ $MACS -t "$Input.bed"  -c "$ChIP.bed" -g $Species --keep-dup=1 -n "$ChIP_10-7" -
 
 
 # Run two coverage at same time but both need to finish before
-(
-	$BEDtools/genomeCoverageBed -bg  -i "$ChIP.bed" -scale $count_pos -g "$Genome.chrom.sizes"  	|
-	$BEDtools/mapBed -a $GBINS -b - -c 4 -o mean  >  "$ChIP.bedgraph" 								&								
-	$BEDtools/genomeCoverageBed -bg  -i "$Input.bed" -scale $count_pos -g "$Genome.chrom.sizes" 	|
-	$BEDtools/mapBed -a $GBINS -b - -c 4 -o mean  >  "$Input.bedgraph" 								&
-) &&  						
-# bedGraphToBigWig cannot accept piped input
-paste "$ChIP.bedgraph" "$Input.bedgraph" | awk '{if ($8 != "." && $4 > $8) {print $1,$2,$3,$4-$8}}'> "$ChIP$Input.bedgraph"
-$UCSCtools/bedGraphToBigWig "$ChIP$Input.bedgraph" "$Genome.chrom.sizes" "$ChIP.bw")
+$BEDtools/genomeCoverageBed -bg  -i "$ChIP.bed" -scale $count_pos -g "$Genome.chrom.sizes" |
+$BEDtools/mapBed -a $GBINS -b - -c 4 -o mean  >  "$ChIP.bedgraph" &
+PROC1=$!
 
-wait;
+$BEDtools/genomeCoverageBed -bg  -i "$Input.bed" -scale $count_pos -g "$Genome.chrom.sizes" |
+$BEDtools/mapBed -a $GBINS -b - -c 4 -o mean  >  "$Input.bedgraph" &
+PROC2= $!
+
+wait "$PROC1" "$PROC2"
+  
+paste "$ChIP.bedgraph" "$Input.bedgraph" | awk '{if ($8 != "." && $4 > $8) {print $1,$2,$3,$4-$8}}'> "$ChIP$Input.bedgraph" &&
+$UCSCtools/bedGraphToBigWig "$ChIP$Input.bedgraph" "$Genome.chrom.sizes" "$ChIP.bw"
+
+wait
 
 # tidy up
 rm "$ChIP.bed"
