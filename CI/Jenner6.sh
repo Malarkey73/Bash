@@ -32,12 +32,12 @@ if [ ! -f "$Genome.chrom.sizes" ]; then
 	$UCSCtools/fetchChromSizes $Genome > "$Genome.chrom.sizes"
 fi
 
+
 #ChIP sorted bam to scaled, chr filtered bed
 (
 	count_pos=$($BEDtools/bamToBed -i "$ChIP.sorted.bam" 										|
 	$BEDtools/slopBed  -i - -g "$Genome.chrom.sizes" -l 113 -r 36 -s 							|
 	grep -Ew $chrN  																			|
-	tee "$ChIP.bed" 																			|
 	wc -l           																			|
 	awk '{print 1000000/$1}')
 	$BEDtools/genomeCoverageBed -bg  -i "$ChIP.bed" -scale $count_pos -g "$Genome.chrom.sizes" 	|
@@ -49,7 +49,6 @@ fi
 	count_pos=$($BEDtools/bamToBed -i "$Input.sorted.bam" 										|
 	$BEDtools/slopBed  -i - -g "$Genome.chrom.sizes" -l 113 -r 36 -s 							|
 	grep -Ew $chrN  																			|
-	tee "$Input.bed" 																			|
 	wc -l           																			|
 	awk '{print 1000000/$1}')
 	$BEDtools/genomeCoverageBed -bg  -i "$Input.bed" -scale $count_pos -g "$Genome.chrom.sizes" |
@@ -60,8 +59,8 @@ fi
 wait
 
 #Run two MACS at same time
-$MACS -t "$Input.sorted.bam"  -c "$ChIP.sorted.bam" -g $Species --keep-dup=1 -n "$ChIP"_10-9 -p 1e-9 &
-$MACS -t "$Input.sorted.bam"  -c "$ChIP.sorted.bam" -g $Species --keep-dup=1 -n "$ChIP"_10-7 -p 1e-7 &
+$MACS -t "$Input.sorted.bam"  -c "$ChIP.sorted.bam" -g $Species --keep-dup=1 -n "$ChIP"_10-9 -p 1e-7 &
+$MACS -t "$Input.sorted.bam"  -c "$ChIP.sorted.bam" -g $Species --keep-dup=1 -n "$ChIP"_10-7 -p 1e-9 &
 
 # subtract Input from ChIP, where ChIP > Input subtract, 
 # otherwise skip that line, then > bedgraph && bigwig

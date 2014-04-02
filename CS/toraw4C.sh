@@ -13,7 +13,7 @@ SEQPIPE4C="/SAN/biomed/biomed13/cohesin-bio/4C/4Cseqpipe/src/4cseqpipe.pl"
 
 export DATADIR; export SEQPIPE4C; 
 
-for i in {1:15}
+for i in {1..15}
 do
 	perl $SEQPIPE4C -fastq2raw -ids $i -fastq_fn $DATADIR/1_S1_L001_R1_001.trim.fastq
 done
