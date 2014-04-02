@@ -24,6 +24,7 @@ Species=`echo $4`
 # chromosome names
 chrN="chr1|chr2|chr3|chr4|chr5|chr6|chr7|chr8|chr9|chr10|chr11|chr12|chr13|chr14|chr15|chr16|chr17|chr18|chr19|chr20|chr21|chr22|chrX|chrY"
 
+# start timer for script
 STARTTIME=$(date +%s)
 
 # fetch the chromosome size info only if it doesnt exist
@@ -31,8 +32,7 @@ if [ ! -f "$Genome.chrom.sizes" ]; then
 	$UCSCtools/fetchChromSizes $Genome > "$Genome.chrom.sizes"
 fi
 
-
-#ChIP to bed and scale
+#ChIP sorted bam to scaled, chr filtered bed
 (
 	count_pos=$($BEDtools/bamToBed -i "$ChIP.sorted.bam" 										|
 	$BEDtools/slopBed  -i - -g "$Genome.chrom.sizes" -l 113 -r 36 -s 							|
@@ -44,7 +44,7 @@ fi
 	$BEDtools/mapBed -a $GBINS -b - -c 4 -o mean  >  "$ChIP.bedgraph"
 )&
 
-#Input to bed and scale
+#Input sorted bam to scaled, chr filtered bed
 (
 	count_pos=$($BEDtools/bamToBed -i "$Input.sorted.bam" 										|
 	$BEDtools/slopBed  -i - -g "$Genome.chrom.sizes" -l 113 -r 36 -s 							|
@@ -63,7 +63,8 @@ wait
 $MACS -t "$Input.bed"  -c "$ChIP.bed" -g $Species --keep-dup=1 -n "$ChIP"_10-9 -p 1e-9 &
 $MACS -t "$Input.bed"  -c "$ChIP.bed" -g $Species --keep-dup=1 -n "$ChIP"_10-7 -p 1e-7 &
 
-
+# subtract Input from ChIP, where ChIP > Input subtract, 
+# otherwise skip that line, then > bedgraph && bigwig
 paste "$ChIP.bedgraph" "$Input.bedgraph" | awk '{if ($8 != "." && $4 > $8) {print $1,$2,$3,$4-$8}}'> "$ChIP$Input.bedgraph" &&
 $UCSCtools/bedGraphToBigWig "$ChIP$Input.bedgraph" "$Genome.chrom.sizes" "$ChIP.bw"
 
@@ -82,6 +83,4 @@ dt=$(($ENDTIME - $STARTTIME))
 ds=$((dt % 60))
 dm=$(((dt / 60) % 60))
 dh=$((dt / 3600))
-printf '%d:%02d:%02d' $dh $dm $ds
-
-
+printf '\n\t %d:%02d:%02d \n' $dh $dm $ds
