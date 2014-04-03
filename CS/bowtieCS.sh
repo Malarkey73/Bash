@@ -13,7 +13,7 @@ SAMTOOLS="/SAN/biomed/biomed13/cohesin-bio/TOOL/SAMtools/samtools-0.1.19/samtool
 
 # user data - note sure these are good places
 FQFOLDER="~/testfq"
-BAMFOLDER="~/test/bam"
+BAMFOLDER="~/testfq/bam"
 
 # reference data
 GENES="/SAN/biomed/biomed13/cohesin-bio/TOOL/Cufflinks/GTF/Mus_musculus/Ensembl/NCBIM37/Annotation/Genes/genes.gtf"
