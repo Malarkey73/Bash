@@ -6,10 +6,10 @@
 #$ -j y
 
 #data directory
-DATADIR="/home/rmgzshd/Sevil4C"
+DATADIR="/SAN/biomed/biomed13/cohesin-bio/SCRIPTS/4C/4Cseqpipe/rawdata"
 
 # tools
-SEQPIPE4C="/SAN/biomed/biomed13/cohesin-bio/4C/4Cseqpipe/src/4cseqpipe.pl"
+SEQPIPE4C="/SAN/biomed/biomed13/cohesin-bio/SCRIPTS/4C/4Cseqpipe/4cseqpipe.pl"
 
 export DATADIR; export SEQPIPE4C; 
 

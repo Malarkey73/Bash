@@ -7,13 +7,13 @@
 
 
 # tools shortcuts - these should really be in PATH
-SEQTK="/home/rmgzshd/seqtk/seqtk"
+SEQTK="/SAN/biomed/biomed13/cohesin-bio/TOOL/seqtk"
 BOWTIE="/SAN/biomed/biomed13/cohesin-bio/TOOL/Bowtie2/bowtie2-2.1.0/bowtie2"
 SAMTOOLS="/SAN/biomed/biomed13/cohesin-bio/TOOL/SAMtools/samtools-0.1.19/samtools"
 
 # user data - note sure these are good places
-FQFOLDER="/home/rmgzshd/RNAseq"
-BAMFOLDER="/home/rmgzshd/RNAseq/bam"
+FQFOLDER="~/testfq"
+BAMFOLDER="~/test/bam"
 
 # reference data
 GENES="/SAN/biomed/biomed13/cohesin-bio/TOOL/Cufflinks/GTF/Mus_musculus/Ensembl/NCBIM37/Annotation/Genes/genes.gtf"
