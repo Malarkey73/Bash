@@ -1,7 +1,6 @@
 #!/bin/bash
-
 # Usage: script file1 file2 genome species
-# E.g.  ./Jenner.sh bamf bamfinput hg19 Hs
+# E.g.  ./Jenner.sh bamfilechip bamfileinput hg19 Hs
 # The input bam MUST BE SORTED
 
 #shortcuts to tools
@@ -10,6 +9,7 @@ BEDtools="/home/rmgzshd/bedtools2/bin"
 MACS="/home/rmgzshd/MACS14/bin/macs14"
 
 # bedtools makewindows -g hg19.chrom.sizes -w 10 > hg19.10bpbins.bed
+# this has to be done once for a genome and particular binsize
 GBINS="/home/rmgzshd/bedtools2/genomes/hg19.10bpbins.bed"
 
 # make sure child processes see shortcuts too
@@ -37,6 +37,7 @@ fi
 	count_pos=$($BEDtools/bamToBed -i "$ChIP.sorted.bam" 										|
 	$BEDtools/slopBed  -i - -g "$Genome.chrom.sizes" -l 113 -r 36 -s 							|
 	grep -Ew $chrN  																			|
+	uniq																						|
 	tee "$ChIP.bed" 																			|
 	wc -l           																			|
 	awk '{print 1000000/$1}')
@@ -49,6 +50,7 @@ fi
 	count_pos=$($BEDtools/bamToBed -i "$Input.sorted.bam" 										|
 	$BEDtools/slopBed  -i - -g "$Genome.chrom.sizes" -l 113 -r 36 -s 							|
 	grep -Ew $chrN  																			|
+	uniq																						|
 	tee "$Input.bed" 																			|
 	wc -l           																			|
 	awk '{print 1000000/$1}')
@@ -60,8 +62,8 @@ fi
 wait
 
 #Run two MACS at same time
-$MACS -t "$Input.sorted.bam"  -c "$ChIP.sorted.bam" -g $Species --keep-dup=1 -n "$ChIP"_10-9 -p 1e-9 &
-$MACS -t "$Input.sorted.bam"  -c "$ChIP.sorted.bam" -g $Species --keep-dup=1 -n "$ChIP"_10-7 -p 1e-7 &
+$MACS -t "$Input.bed"  -c "$ChIP.bed" -g $Species --keep-dup=1 -n "$ChIP"_10-9 -p 1e-6 &
+$MACS -t "$Input.bed"  -c "$ChIP.bed" -g $Species --keep-dup=1 -n "$ChIP"_10-7 -p 1e-6 &
 
 # subtract Input from ChIP, where ChIP > Input subtract, 
 # otherwise skip that line, then > bedgraph && bigwig
