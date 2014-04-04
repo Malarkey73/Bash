@@ -35,9 +35,9 @@ fi
 #ChIP sorted bam to scaled, chr filtered bed
 (
 	count_pos=$($BEDtools/bamToBed -i "$ChIP.sorted.bam" 										|
-	$BEDtools/slopBed  -i - -g "$Genome.chrom.sizes" -l 113 -r 36 -s 							|
-	grep -Ew $chrN  																			|
+	grep -Ew $chrN																			|
 	uniq																						|
+	$BEDtools/slopBed  -i - -g "$Genome.chrom.sizes" -l 113 -r 36 -s 							|
 	tee "$ChIP.bed" 																			|
 	wc -l           																			|
 	awk '{print 1000000/$1}')
@@ -48,9 +48,9 @@ fi
 #Input sorted bam to scaled, chr filtered bed
 (
 	count_pos=$($BEDtools/bamToBed -i "$Input.sorted.bam" 										|
-	$BEDtools/slopBed  -i - -g "$Genome.chrom.sizes" -l 113 -r 36 -s 							|
 	grep -Ew $chrN  																			|
 	uniq																						|
+	$BEDtools/slopBed  -i - -g "$Genome.chrom.sizes" -l 113 -r 36 -s 							|
 	tee "$Input.bed" 																			|
 	wc -l           																			|
 	awk '{print 1000000/$1}')
