@@ -32,7 +32,9 @@ STARTTIME=$(date +%s)
 
 # fetch the chromosome size info only if it doesnt exist
 if [ ! -f "$Genome.chrom.sizes" ]; then
-	$UCSCtools/fetchChromSizes $Genome > "$Genome.chrom.sizes"
+	$UCSCtools/fetchChromSizes hg19 |grep -Ew $chrN | sed 's/chr/chr /' | 
+	sed 's/ X/ 23/' | sed 's/ Y/ 24/' | sort -k2,2n | sed 's/chr 23/chrX/' | 
+	sed 's/chr 24/chrY/' | sed 's/chr /chr/' > "$Genome.chrom.sizes"
 fi
 
 #ChIP sorted bam to scaled, chr filtered bed
@@ -45,7 +47,7 @@ fi
 	wc -l |
 	awk '{print 1000000/$1}')
 	$BEDtools/genomeCoverageBed -bg  -i "$ChIP.bed" -scale $count_pos -g "$Genome.chrom.sizes" |
-	$BEDtools/mapBed -a $GBINS -b - -c 4 -o mean  >  "$ChIP.bedgraph"
+	$BEDtools/mapBed -a $GBINS -b - -c 4 -o mean -g "$Genome.chrom.sizes" >  "$ChIP.bedgraph"
 )&
 
 #Input sorted bam to scaled, chr filtered bed
@@ -58,7 +60,7 @@ fi
 	wc -l |
 	awk '{print 1000000/$1}')
 	$BEDtools/genomeCoverageBed -bg  -i "$Input.bed" -scale $count_pos -g "$Genome.chrom.sizes" |
-	$BEDtools/mapBed -a $GBINS -b - -c 4 -o mean  >  "$Input.bedgraph"
+	$BEDtools/mapBed -a $GBINS -b - -c 4 -o mean -g "$Genome.chrom.sizes" >  "$Input.bedgraph"
 )&
 
 # have to wait for both to finish
@@ -76,11 +78,11 @@ $UCSCtools/bedGraphToBigWig "$ChIP$Input.bedgraph" "$Genome.chrom.sizes" "$ChIP.
 wait
 
 # tidy up
-#rm "$ChIP.bed"
-#rm "$Input.bed"
-#rm "$ChIP$Input.bedgraph"
-#rm "$ChIP.bedgraph"
-#rm "$Input.bedgraph"
+rm "$ChIP.bed"
+rm "$Input.bed"
+rm "$ChIP$Input.bedgraph"
+rm "$ChIP.bedgraph"
+rm "$Input.bedgraph"
 
 # print time
 ENDTIME=$(date +%s)
