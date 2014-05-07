@@ -77,7 +77,7 @@ wait
 
 # Where ChIP > Input , ChIP - Input, otherwise 0
 # then to bigwig
-paste "$ChIP.bedgraph" "$Input.bedgraph" | awk '{if ($8 != "." && $4 > $8) {print $1,$2,$3,$4-$8}else{print $1,$2,$3,0}}' > "$ChIP$Input.bedgraph" &&
+paste "$ChIP.bedgraph" "$Input.bedgraph" | awk '{if ($8 != "." && $4 > $8) {print $1,$2,$3,$4-$8}}' > "$ChIP$Input.bedgraph" &&
 $UCSCtools/bedGraphToBigWig "$ChIP$Input.bedgraph" "$Genome.chrom.sizes" "$ChIP.bw"
 
 wait
