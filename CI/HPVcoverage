@@ -11,8 +11,6 @@ BEDTOOLS="/home/rmgzshd/bedtools2/bin/bedtools"
 export BT2; export BT2GENOME; export SAMBAMBA; export BEDTOOLS;
 
 # We pass through the TCGA BAM file (bwa PE) outputting any unmapped
-# tee first to a bed file
-# tee second to a grep which pulls out bam reads (ie not header)
 # another tee which splits the reads into R1 and R2 fastq files
 
 tee >($BEDTOOLS bamtobed -i stdin > $prefix.ANCHOR.bed )
@@ -20,13 +18,26 @@ tee >($BEDTOOLS bamtobed -i stdin > $prefix.ANCHOR.bed )
 
 for bam in *.sorted.bam
 do
+	# this is giving me a subtly different no. of reads n=4!!!
 	prefix=$(echo ${bam} | sed 's/.sorted.bam//')
+	time
+	(
 	$SAMBAMBA view  -F  "unmapped or mate_is_unmapped" $bam 			|
-	grep -v ^@ |
 	tee >(awk 'NR%2==1 {print "@"$1"\n"$10"\n+\n"$11}' > R1.fq) 		> \
 		>(awk 'NR%2==0 {print "@"$1"\n"$10"\n+\n"$11}' > R2.fq)			
 	
-# this is giving me a subtly different ~4 reads 
+	)
+	
+# THIS WORKS
+time(
+	$SAMBAMBA view --format=bam -F  "unmapped or mate_is_unmapped" $bam |
+	tee >($BEDTOOLS bamtofastq -i stdin -fq R1.fq -fq2 R2.fq)			> \
+	tee >($BEDTOOLS bamtobed -i stdin > ANCHOR.bed)
+	)
+
+
+	>$BEDTOOLS bamtofastq -i stdin -fq R1.fq -fq2 R2.fq 
+	)
 
 	$SAMBAMBA view --format=bam -F "unmapped or mate_is_unmapped" $bam 	| 
 	$BEDTOOLS bamtobed -i stdin > ANCHOR.bed
