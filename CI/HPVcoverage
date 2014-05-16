@@ -28,12 +28,21 @@ do
 	
 	)
 	
-# THIS WORKS
+# THIS WORKS BUT WARNINGS ABOUT MISSING PAIRS IS IT SORTED PROPERLY???
 time(
 	$SAMBAMBA view --format=bam -F  "unmapped or mate_is_unmapped" $bam |
 	tee >($BEDTOOLS bamtofastq -i stdin -fq R1.fq -fq2 R2.fq)			> \
 	tee >($BEDTOOLS bamtobed -i stdin > ANCHOR.bed)
 	)
+
+# try another sort
+time(
+	$SAMBAMBA view --format=bam -F  "unmapped or mate_is_unmapped" $bam |
+	$SAMBAMBA sort 
+	tee >($BEDTOOLS bamtofastq -i stdin -fq R1.fq -fq2 R2.fq)			> \
+	tee >($BEDTOOLS bamtobed -i stdin > ANCHOR.bed)
+	)
+
 
 
 	>$BEDTOOLS bamtofastq -i stdin -fq R1.fq -fq2 R2.fq 
