@@ -21,11 +21,12 @@ tee >($BEDTOOLS bamtobed -i stdin > $prefix.ANCHOR.bed )
 for bam in *.sorted.bam
 do
 	prefix=$(echo ${bam} | sed 's/.sorted.bam//')
-	$SAMBAMBA view  -F  "(unmapped or mate_is_unmapped) and paired" $bam 			|
+	$SAMBAMBA view  -F  "unmapped or mate_is_unmapped" $bam 			|
 	grep -v ^@ |
 	tee >(awk 'NR%2==1 {print "@"$1"\n"$10"\n+\n"$11}' > R1.fq) 		> \
 		>(awk 'NR%2==0 {print "@"$1"\n"$10"\n+\n"$11}' > R2.fq)			
 	
+# this is giving me a subtly different ~4 reads 
 
 	$SAMBAMBA view --format=bam -F "unmapped or mate_is_unmapped" $bam 	| 
 	$BEDTOOLS bamtobed -i stdin > ANCHOR.bed
