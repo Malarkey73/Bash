@@ -3,11 +3,20 @@ set -o nounset
 set -o errexit
 set -o pipefail
 
+# profiled 15GB file in:
+#real	11m23.279s
+#user	70m25.134s
+#sys	9m2.536s
+
+#example log output
+# HPV	TCGA-BA-5153-01A-01D-1431_120423_SN590_0154_AC0JBHACXX_s_5_rg	138.75
+
 BT2="/home/rmgzshd/bowtie2-2.1.0/bowtie2"
 BT2GENOME="/mnt/store1/cghub/HPV_BT2/HPV"
 SAMBAMBA="/home/rmgzshd/sambamba/sambamba"
 BEDTOOLS="/home/rmgzshd/bedtools2/bin/bedtools"
-GENOME="/mnt/store1/cghub/HPV_BT2/HPV.sizes"
+GENOMESIZES="/mnt/store1/cghub/HPV_BT2/HPV.sizes"
+LOGFILE="/mnt/store1/cghub/HNSC/coverage.log"
 
 export BT2; export BT2GENOME; export SAMBAMBA; export BEDTOOLS;
 
@@ -19,7 +28,10 @@ convertsecs() {
 }
 STARTTIME=$(date +%s)
 
-for BAM in *.sorted.bam
+
+FOUND=$(find -maxdepth 2 -name *.sorted.bam)
+
+for BAM in $FOUND
 do
 	
 	PREFIX=$(echo ${BAM} | sed 's/.sorted.bam//')
@@ -33,40 +45,51 @@ do
 	
 	# print time
 	NEXTTIME1=$(date +%s)
-#	printf "\n Finished extracting unmapped reads in: \n"
-#	convertsecs $(($NEXTTIME1 - $STARTTIME))
+	#	printf "\n Finished extracting unmapped reads in: \n"
+	#	convertsecs $(($NEXTTIME1 - $STARTTIME))
 		
-	# Use bowtie2 to find matches amongst the unmapped genome in HPV 	
-	$BT2 -p 24 -x $BT2GENOME -1 R1.fq -2 R2.fq 				| 
-	$SAMBAMBA view -S --format=bam /dev/stdin 				|
-	tee $PREFIX.hpv.bam 							|
-    	$BEDTOOLS bamtobed -bedpe -i stdin | sort -S8G -k 7 			|
+	# Use bowtie2 to find matches amongst the unmapped genome in HPV
+	# convert to bam
+	# sort it 	
+	$BT2 -p 24 -x $BT2GENOME -1 R1.fq -2 R2.fq 				|
+	$SAMBAMBA view -S --format=bam /dev/stdin > tempsortbam	 
+	$SAMBAMBA sort -m=8G tempsortbam -o $PREFIX.hpv.bam 
+	
+	# NB sambabmba sort whilst fast doesn't work on stream???
+	# So it fucks up the pipe flow here (see above)
+	$BEDTOOLS bamtobed -bedpe -i $PREFIX.hpv.bam | sort -S8G -k 7 			|
 	awk '{if ($2 != -1 || $5 != -1) print $1,$2,$3,$4,$5, $6, substr($7, 0, length($7)-2), $8, $9, $10}' > $PREFIX.hpv.bedpe
 
-    	# print time
+   	# print time
 	NEXTTIME2=$(date +%s)
-#	printf "\n Finished aligning to HPV genome in: \n"
-#	convertsecs $(($NEXTTIME2 - $NEXTTIME1))
+	#	printf "\n Finished aligning to HPV genome in: \n"
+	#	convertsecs $(($NEXTTIME2 - $NEXTTIME1))
     
-    	# calculate coverage NB NEED TO WRITE/APPEND THIS TO A LOG FILE
-    	printf "\n HPV coverage :"
-    	$BEDTOOLS genomecov -bg -ibam $PREFIX.hpv.bam  -g $GENOME  |
-    	awk '{sum+=  qq$4} END { print sum/NR}'
-	
+    # calculate coverage NB NEED TO WRITE/APPEND THIS TO A LOG FILE
+    printf "\n HPV coverage :"
+    HPVCOV=$($BEDTOOLS genomecov -bg -ibam $PREFIX.hpv.bam  -g $GENOMESIZES  |
+   	awk '{sum+=  qq$4} END { print sum/NR}')
+	printf "HPV\t$PREFIX\t$HPVCOV\n" >> $LOGFILE
+
 	# print time
 	NEXTTIME3=$(date +%s)
-#	printf "\n Finished calculating HPV coverage in: \n"
-#	convertsecs $(($NEXTTIME3 - $NEXTTIME2))
+	#	printf "\n Finished calculating HPV coverage in: \n"
+	#	convertsecs $(($NEXTTIME3 - $NEXTTIME2))
 
-	#awk '{if ($2!= -1 || $5 != -1)  print}'
-	#join -1 4 -2 4 sort.hpv.bed sort.anchor.bed > $PREFIX.join.bed
+	# merge the single mapped HPV and ANCHOR samples to look for bridges
+	join -1 7 -2 7 $PREFIX.hpv.bedpe $PREFIX.anchor.bedpe | 
+	sort -k1,14 -k2,15 >  $PREFIX.integration.bed
 
+	rm $PREFIX.hpv.bedpe 
+	rm $PREFIX.anchor.bedpe
 	printf "\n Next file?: "
 done
-printf "\n No, all done: "
+printf "\n No, all done! \n"
+
 
 rm R1.fq
 rm R2.fq
+
 # print time
 ENDTIME=$(date +%s)
 #printf "\n\t Finished all work in: "
