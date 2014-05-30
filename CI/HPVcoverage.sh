@@ -14,12 +14,13 @@ set -o pipefail
 BT2="/home/rmgzshd/bowtie2-2.1.0/bowtie2"
 BT2GENOME="/mnt/store1/cghub/HPV_BT2/HPV"
 SAMBAMBA="/home/rmgzshd/sambamba/sambamba"
+SAMTOOLS="home/rmgzshd/samtools/samtools"
 BEDTOOLS="/home/rmgzshd/bedtools2/bin/bedtools"
 GENOMESIZES="/mnt/store1/cghub/HPV_BT2/HPV.sizes"
 LOGFILE="/mnt/store1/cghub/HNSC/Tumour/coverage.log"
 RESULTS="/mnt/store1/cghub/HNSC/Tumour/Results"
 
-export BT2; export BT2GENOME; export SAMBAMBA; export BEDTOOLS; export RESULTS;
+export BT2; export BT2GENOME; export SAMBAMBA; export BEDTOOLS; export RESULTS; export BAMTOOLS;
 
 convertsecs() {
  ((h=${1}/3600))
@@ -54,7 +55,9 @@ do
 	# sort it 	
 	$BT2 -p 24 -x $BT2GENOME -1 R1.fq -2 R2.fq 				|
 	$SAMBAMBA view -S --format=bam /dev/stdin > tempsortbam	 
-	$SAMBAMBA sort -m=8G tempsortbam -o $PREFIX.hpv.bam 
+	#I have had problems with stability of sambabmba sort of BIG files (>50GB)
+	#$SAMBAMBA sort -m=32G tempsortbam -o $PREFIX.hpv.bam 
+	$SAMTOOLS sort -@ 12 -m 32G tempsortbam $PREFIX.hpv.bam
 	
 	# NB sambabmba sort whilst fast doesn't work on stream???
 	# So it fucks up the pipe flow here (see above)
