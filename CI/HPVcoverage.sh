@@ -43,8 +43,10 @@ do
 	tee >($BEDTOOLS bamtofastq -i stdin -fq R1.fq -fq2 R2.fq)										|
 	$BEDTOOLS bamtobed -bedpe -i stdin 	| sort -S8G -k 7											|
 	# I clip the mate pair ID last char read flag so I can merge with HPV bed  
-	awk '{if ($2 != -1 || $5 != -1) print $1,$2,$3,$4,$5,$6, substr($7, 0, length($7)-2), $8, $9, $10}' > $PREFIX.anchor.bedpe
+	#awk '{if ($2 != -1 || $5 != -1) print $1,$2,$3,$4,$5,$6, substr($7, 0, length($7)-2), $8, $9, $10}' > $PREFIX.anchor.bedpe
+	awk '{if ($2 != -1 || $5 != -1) print $1,$2,$3,$4,$5,$6, $7, $8, $9, $10}' > $PREFIX.anchor.bedpe
 	
+
 	# print time
 	NEXTTIME1=$(date +%s)
 	printf "\n Finished extracting unmapped reads: \n"
@@ -62,7 +64,8 @@ do
 	# NB sambabmba sort whilst fast doesn't work on stream???
 	# So it fucks up the pipe flow here (see above)
 	$BEDTOOLS bamtobed -bedpe -i $PREFIX.hpv.bam | sort -S8G -k 7 			|
-	awk '{if ($2 != -1 || $5 != -1) print $1,$2,$3,$4,$5, $6, substr($7, 0, length($7)-2), $8, $9, $10}' > $PREFIX.hpv.bedpe
+	#awk '{if ($2 != -1 || $5 != -1) print $1,$2,$3,$4,$5, $6, substr($7, 0, length($7)-2), $8, $9, $10}' > $PREFIX.hpv.bedpe		awk '{if ($2 != -1 || $5 != -1) print $1,$2,$3,$4,$5, $6, substr($7, 0, length($7)-2), $8, $9, $10}' > $PREFIX.hpv.bedpe
+	awk '{if ($2 != -1 || $5 != -1) print $1,$2,$3,$4,$5, $6, $7, $8, $9, $10}' > $PREFIX.hpv.bedpe
 
    	# print time
 	NEXTTIME2=$(date +%s)
