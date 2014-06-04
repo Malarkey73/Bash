@@ -14,7 +14,7 @@ set -o pipefail
 BT2="/home/rmgzshd/bowtie2-2.1.0/bowtie2"
 BT2GENOME="/mnt/store1/cghub/HPV_BT2/HPV"
 SAMBAMBA="/home/rmgzshd/sambamba/sambamba"
-SAMTOOLS="home/rmgzshd/samtools/samtools"
+SAMTOOLS="/home/rmgzshd/samtools/samtools"
 BEDTOOLS="/home/rmgzshd/bedtools2/bin/bedtools"
 GENOMESIZES="/mnt/store1/cghub/HPV_BT2/HPV.sizes"
 LOGFILE="/mnt/store1/cghub/HNSC/Tumour/coverage.log"
@@ -59,7 +59,7 @@ do
 	$SAMBAMBA view -S --format=bam /dev/stdin > tempsortbam	 
 	#I have had problems with stability of sambabmba sort of BIG files (>50GB)
 	#$SAMBAMBA sort -m=32G tempsortbam -o $PREFIX.hpv.bam 
-	$SAMTOOLS sort -@ 12 -m 32G tempsortbam $PREFIX.hpv.bam
+	$SAMTOOLS sort -@ 12 -m 32G tempsortbam $PREFIX.hpv
 	
 	# NB sambabmba sort whilst fast doesn't work on stream???
 	# So it fucks up the pipe flow here (see above)
