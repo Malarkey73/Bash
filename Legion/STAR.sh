@@ -27,7 +27,7 @@ set -o errexit
 set -o pipefail
 
 ENSEMBL75="/home/rmgzshd/Scratch/Genome/ENSEMBL.homo_sapiens.release-75"
-FQDATA="/home/rmgzshd/Scratch/Pablo"
+FQDATA="/home/rmgzshd/Scratch/Pablo/FASTQ"
 SEQTK="/home/rmgzshd/Tools/seqtk/seqtk"
 module load star/2.3.0e
 module load samtools/0.1.19
@@ -45,7 +45,8 @@ do
 	--readFilesIn $fq1 $fq2 \
 	--runThreadN 16 \
 	--readFilesCommand $SEQTK trimfq \
-	--genomeLoad NoSharedMemory \
+	--genomeLoad LoadAndKeep \
+	--outFileNamePrefix $prefix \
 	--outSAMstrandField intronMotif \
 	--outStd SAM \
 	--outSAMattributes Standard | samtools view -buS - | samtools sort -m16G - $prefix
