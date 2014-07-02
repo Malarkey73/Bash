@@ -46,5 +46,5 @@ done
 for bam in *.bam
 do
 	prefix=$(echo ${bam} | sed 's/.bam//')
-	samtools index $bam $prefix.bai
+	samtools index $bam $prefix.bam.bai
 done
