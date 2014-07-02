@@ -2,26 +2,12 @@
 bam_prefix = /home/rmgzshd/Scratch/Pablo/BAM
 miso_prefix=/home/rmgzshd/Scratch/Pablo/MISO
 
-bam_files = [	"SC1_ATCACG_L006.bam", "SC3_TTAGGC_L006.bam", "SC5_ACAGTG_L006.bam",
-		"SC7_CAGATC_L006.bam", "SC1_ATCACG_L007.bam", "SC3_TTAGGC_L007.bam",	
-		"SC5_ACAGTG_L007.bam", "SC7_CAGATC_L007.bam", "SC2_CGATGT_L006.bam",	
-		"SC4_TGACCA_L006.bam", "SC6_GCCAAT_L006.bam", "SC8_ACTTGA_L006.bam",
-		"SC2_CGATGT_L007.bam", "SC4_TGACCA_L007.bam", "SC6_GCCAAT_L007.bam",	
-		"SC8_ACTTGA_L007.bam"]
-
-miso_files= [	"SC1_ATCACG_L006", "SC3_TTAGGC_L006", "SC5_ACAGTG_L006",
-               	"SC7_CAGATC_L006", "SC1_ATCACG_L007", "SC3_TTAGGC_L007",
-               	"SC5_ACAGTG_L007", "SC7_CAGATC_L007", "SC2_CGATGT_L006",
-               	"SC4_TGACCA_L006", "SC6_GCCAAT_L006", "SC8_ACTTGA_L006",
-               	"SC2_CGATGT_L007", "SC4_TGACCA_L007", "SC6_GCCAAT_L007",
-               	"SC8_ACTTGA_L007"]
-
 filter_results = True
 min_event_reads = 20
 
 [cluster]
 cluster_command = "qsub -l h_rt=00:10:00 -l mem=32GB -l tmpfs=32GB -P TCGAHPVHNSC -N MISO -wd 
-~/Scratch/Pablo"
+~/Scratch/Pablo/MISO"
 
 [sampler]
 burn_in = 500
