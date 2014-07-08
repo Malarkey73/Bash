@@ -35,7 +35,7 @@ export BAMDATA;
 miso --run ./indexed $BAMDATA/SC1_ATCACG_L006.bam \
 --output-dir 	output 													\
 --prefilter																\
---settings-filename /home/rmgzshd/Scratch/Pablo/MISO/miso_settings.txt	\
+--settings-filename /home/rmgzshd/Scratch/Pablo/MISO/settings/miso_settings.txt	\
 --read-len 		100 													\
 --paired-end 	174	53													\
 --SGEarray																\

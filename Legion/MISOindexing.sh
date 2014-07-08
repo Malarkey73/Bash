@@ -7,7 +7,7 @@
 # 4. Request 15 gigabyte of TMPDIR space (default is 10 GB)
 #$ -l tmpfs=32G
 # 5. Set the name of the job.
-#$ -N MISOutils
+#$ -N MISOindexing
 # 6. Find <your_project_id> by running the command "groups"
 #$ -P TCGAHPVHNSC
 # 7. Replace "<your_UCL_id>" with your UCL user ID :)

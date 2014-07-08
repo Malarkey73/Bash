@@ -33,7 +33,7 @@ do
     STAR --genomeDir $ENSEMBL75 \
 	--readFilesIn $fq1 $fq2 \
 	--runThreadN 16 \
-	--readFilesCommand $SEQTK trimfq \
+	--readFilesCommand $SEQTK trimfq -b 5 -e 10 \
 	--genomeLoad NoSharedMemory \
 	--outFileNamePrefix $prefix \
 	--outSAMstrandField intronMotif \
