@@ -1,0 +1,2 @@
+SampleID	NormalID	Cohort	PatientID	Type	TumorBAM	NormalBAM
+T1	N1	HPV_HNSC	TCGA_4077	Tumour 	/home/rmgzshd/Scratch/CAKE/BAM/1e21d66d-c9c0-4c44-8eed-32e6d89e90c7/TCGA-BA-4077-01B-01D-1431_120310_SN590_0145_BD0RGYACXX_s_7_rg.sorted.bam 	/home/rmgzshd/Scratch/CAKE/BAM//91ef253b-c0a2-43cd-b33b-7786e1540990/TCGA-BA-4077-10A-01D-1431_120310_SN590_0145_BD0RGYACXX_s_8_rg.sorted.bam

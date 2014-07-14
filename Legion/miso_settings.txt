@@ -5,9 +5,8 @@ miso_prefix=/home/rmgzshd/Scratch/Pablo/MISO
 filter_results = True
 min_event_reads = 20
 
-[cluster]
-cluster_command = "qsub -l h_rt=00:10:00 -l mem=32GB -l tmpfs=32GB -P TCGAHPVHNSC -N MISO -wd 
-~/Scratch/Pablo/MISO"
+#[cluster]
+cluster_command = qsub -l h_rt=00:10:00 -l mem=32GB -l tmpfs=32GB -P TCGAHPVHNSC -N MISO -wd /home/rmgzshd/Scratch/Pablo/MISO
 
 [sampler]
 burn_in = 500
