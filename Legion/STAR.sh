@@ -19,7 +19,7 @@ set -o nounset
 set -o errexit
 set -o pipefail
 
-ENSEMBL75="/home/rmgzshd/Scratch/Genome/ENS_hs_75_STARindex"
+UCSCHG19="/home/rmgzshd/Scratch/Homo_sapiens/UCSC/hg19/Sequence/WholeGenomeFasta"
 SEQTK="/home/rmgzshd/Tools/seqtk/seqtk"
 module load star/2.3.0e
 module load samtools/0.1.19
@@ -30,7 +30,7 @@ do
     prefix=$(echo ${fq1} | sed 's/_R1_001.fastq.gz//')
     fq2=${prefix}_R2_001.fastq.gz
 
-    STAR --genomeDir $ENSEMBL75 \
+    STAR --genomeDir $UCSCHG19 \
 	--readFilesIn $fq1 $fq2 \
 	--runThreadN 16 \
 	--readFilesCommand $SEQTK trimfq -b 5 -e 10 \

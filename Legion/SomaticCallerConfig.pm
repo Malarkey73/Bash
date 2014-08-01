@@ -217,7 +217,7 @@ sub SCRIPTS_DIR() {'/shared/ucl/apps/cake/1.0/trunk/scripts/'}
 	   REFERENCE_FASTA =>
 	   {
 	    # hg19
-	    HUMAN => '/home/rmgzshd/Scratch/Genome/ENS_hs_75_STARindex/Homo_sapiens.GRCh37.75.dna.primary_assembly.fa',
+	    HUMAN => '/home/rmgzshd/Scratch/Homo_sapiens/UCSC/hg19/Sequence/WholeGenomeFasta/genome.fa',
 	    
 	    # NCBIM37 / 38
 	    #MOUSE => '/Users/rm8/Sanger/NGS_Analysis/Reference_Genome_Files/mouse/reference_genome/NCBIM37_um_mod1.fa',
@@ -272,7 +272,7 @@ sub SCRIPTS_DIR() {'/shared/ucl/apps/cake/1.0/trunk/scripts/'}
 	    	
 	    	HUMAN =>
 	    	{
-	    		'KNOWN_HUMAN_SNP' =>'/home/rmgzshd/Scratch/Genome/CAKE/ALL.wgs.phase1_release_v3.20101123.snps_indels_sv.sites.pos',
+	    		'KNOWN_HUMAN_SNP' =>'/home/rmgzshd/Scratch/Homo_sapiens/1000genomes/ALL.wgs.phase1_release_v3.20101123.snps_indels_sv.sites.pos',
 			},
 	   },
 	
@@ -312,7 +312,7 @@ sub SCRIPTS_DIR() {'/shared/ucl/apps/cake/1.0/trunk/scripts/'}
 	   EXON_COORDINATES_FILE =>
 	   {
 	  		# Human Exon hg19
-	   		HUMAN => 'Set_the_Path_to_Human_Exonic_Co-ordinate_file',
+	   		HUMAN => '/home/rmgzshd/Scratch/Homo_sapiens/UCSC/hg19/Annotation/Exons/UCSCexons.txt',
 
 			# Mouse Exonic Co-Ord
 	   		MOUSE => '/shared/ucl/apps/cake/1.0/required/Test_exonic_cordinate_file.interval',
@@ -351,8 +351,8 @@ sub SCRIPTS_DIR() {'/shared/ucl/apps/cake/1.0/trunk/scripts/'}
 	   	# NCBIM37
 	    MOUSE => '/shared/ucl/apps/cake/1.0/required/Test_Indel_interval_file.interval',
 	
-	    #hg19
-	    HUMAN => 'Set_the_Path_to_Human_Known_Indel_Location',
+	    #hg19 see the REAME.txt in the folder with this
+	    HUMAN => '/home/rmgzshd/Scratch/Homo_sapiens/UCSC/hg19/Annotation/Indels/indels.txt',
 	    
 	   },
 

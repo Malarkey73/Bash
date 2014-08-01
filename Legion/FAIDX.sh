@@ -21,4 +21,5 @@ set -o pipefail
 
 
 module load samtools/0.1.19
-samtools faidx /home/rmgzshd/Scratch/Genome/ENS_hs_75_STARindex/Homo_sapiens.GRCh37.75.dna.primary_assembly.fa
+samtools faidx /home/rmgzshd/Scratch/Homo_sapiens/UCSC/hg19/Sequence/WholeGenomeFasta/genome.fa
+

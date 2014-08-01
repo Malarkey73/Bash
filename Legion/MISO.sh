@@ -30,14 +30,20 @@ module load miso/0.5.2
 
 export BAMDATA;
 
-# paired end taken from header of "insert-dist/SC1_ATCACG_L006.bam.insert_len"
-# after running MISOutils.sh script
-miso --run ./indexed $BAMDATA/SC1_ATCACG_L006.bam 								\
---output-dir 	output 															\
---prefilter																		\
---settings-filename /home/rmgzshd/Scratch/Pablo/MISO/settings/miso_settings.txt	\
---read-len 		85 																\
---paired-end 	174	53															\
---SGEarray																		\
---job-name		MISO 															\
---use-cluster
+for bam in $BAMDATA/*.bam
+do
+    prefix=$(echo ${bam##*/} | sed 's/.bam//')
+    
+	# paired end taken from header of "insert-dist/SC1_ATCACG_L006.bam.insert_len"
+	# after running MISOutils.sh script
+	miso --run ./indexed $bam 														\
+	--output-dir 	$prefix 														\
+	--prefilter																		\
+	--settings-filename /home/rmgzshd/Scratch/Pablo/MISO/settings/miso_settings.txt	\
+	--read-len 		85 																\
+	--paired-end 	174	53															\
+	--use-cluster																	\
+	--SGEarray																		\
+	--job-name		MISO 															
+done
+
