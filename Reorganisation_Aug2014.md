@@ -36,6 +36,7 @@ Not sure whether to try and rewrite bits of MISO to run on Legion properly. I am
 
 ## MRAS SHOC2 Expression
 Here Pablo has asked me to look at the expression of SHOC2 and MRAS in KRAS mutant tumours as he has some in-vitro data that suggests a link. So I have set out to compare the genetic data on KRAS mutations available from Tumorportal: http://cancergenome.broadinstitute.org/index.php with expression data downloaded from TCGA: https://tcga-data.nci.nih.gov/tcga/dataAccessMatrix.htm. The available tumours with the most KRAS mutations in the TCGA were UCEC, CRC, LUAD and MM - or endometrial, colorectal, lung adenocarcinoma, and multiple myeloma. After downloading and processing RNAseq data I surprisingly found that the genetic and RNAseq data only substantially overlapped for UCEC (n=241) and LUAD (n=171).
+
 1. **Data and Code** This is on my Mac desktop in TCGA_RNAseq folder. The processing of individual sample RNAseq into a single expression matrix - and filtering to only those also sequenced in Tumorportal is in the file_munging.R script.
 2. **Results** The expression of SHOC2 and MRAS in KRAS mutatnt and WT tumours are in SHOC2_MRASexprs.tiff. Still some follow-up to de done...
 
