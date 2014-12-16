@@ -28,9 +28,9 @@ do
    	# remove the temporary download file
    	rm "$ID.gto"
    	# gunzip the archive to reveal 2 PE fastq files 
-   	tar -xzvf $ID/*.tar.gz
+   	tar -xzvf $ID/*.tar.gz -C $ID
    	# move them to their folder
-   	mv *.fastq $ID
+   	#mv *.fastq $ID
    	# capture the names and locationsof the PE fq files
    	fq1=($ID/*_1.fastq)
    	fq2=($ID/*_2.fastq)
@@ -47,8 +47,8 @@ do
 	--outSAMattributes Standard
 
 	#remove used raw data as I have no space
-	rm $ID/*.fastq
-	rm $ID/*.tar.gz
+	rm "$ID/*.fastq"
+	rm "$ID/*.tar.gz"
 done
 
 
