@@ -47,8 +47,8 @@ do
 	--outSAMattributes Standard
 
 	#remove used raw data as I have no space
-	rm "$ID/*.fastq"
-	rm "$ID/*.tar.gz"
+	rm $ID/*.fastq
+	rm $ID/*.tar.gz
 done
 
 
