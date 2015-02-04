@@ -7,12 +7,13 @@ set -o pipefail
 SAMTOOLS="/home/rmgzshd/samtools/samtools"
 
 # shortcuts to annotation
-GENOME="/mnt/store1/GATK_BUNDLE_2.8_hg19/HPV_BUNDLE/GRCh37-lite-+-HPV_Redux-build.fa"
-CAPTURE_REGION="/mnt/store1/WXS_CAPTURE_BEDS/SeqCap_EZ_Exome_v3_primary.bed"
+GENOME="/mnt/store1/GATK_BUNDLE_2.8_hg19/Homo_sapiens_assembly19.fasta"
+CAPTURE_REGION="/mnt/store1/WXS_CAPTURE_BEDS/whole_exome_agilent_1.1_refseq_plus_3_boosters.targetIntervals.bed"
 DATAFOLDER="/mnt/store1/CESC_WXS"
 TUMORBAM=`echo $1`
 REFBAM=`echo $2`
-PREFIX=`echo $TUMORBAM | sed 's/.bam//' `
+# longest common prefix
+PREFIX=`printf "%s\n%s\n" $TUMORBAM $REFBAM | sed -e 'N;s/^\(.*\).*\n\1.*$/\1/'`
 export GENOME; export CAPTURE_REGION; export DATAFOLDER; export TUMORBAM; export REFBAM; export PREFIX
 
 
