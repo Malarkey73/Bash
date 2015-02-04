@@ -7,7 +7,7 @@ set -o pipefail
 SAMTOOLS="/home/rmgzshd/samtools/samtools"
 
 # shortcuts to annotation
-GENOME="/mnt/store1/GATK_BUNDLE_2.8_hg19/ucsc.hg19.fasta"
+GENOME="/mnt/store1/GATK_BUNDLE_2.8_hg19/HPV_BUNDLE/GRCh37-lite-+-HPV_Redux-build.fa"
 CAPTURE_REGION="/mnt/store1/WXS_CAPTURE_BEDS/SeqCap_EZ_Exome_v3_primary.bed"
 DATAFOLDER="/mnt/store1/CESC_WXS"
 
