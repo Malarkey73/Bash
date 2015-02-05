@@ -8,6 +8,6 @@ export VARSCAN; export MPILEUPDATA; export INDELDATA;
 
 java -d64 -Xmx4g -jar $VARSCAN processSomatic $SNPDATA 
 
-grep Somatic  "$SNPDATA.Somatic" | grep -v _ | awk '{print $1, "\t", $2, "\t", $2}' >  "$SNPDATA.Somatic.pos" 
+grep Somatic "$SNPDATA.Somatic" | grep -v _ | awk '{print $1, "\t", $2, "\t", $2}' >  "$SNPDATA.Somatic.pos" 
 
 java -d64 -Xmx4g -jar $VARSCAN processSomatic $INDELDATA
