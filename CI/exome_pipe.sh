@@ -20,7 +20,8 @@ REFBAM=`echo $2`
 # and remove any non-alphanumeric final chars e.g. TCGA-C5.A1MF- become TCGA-C5.A1MF
 PREFIX=`printf "%s\n%s\n" $TUMORBAM $REFBAM | sed -e 'N;s/^\(.*\).*\n\1.*$/\1/' | sed s'/[^a-zA-Z\d\s:]$//'` 
 
-export GENOME; export CAPTURE_REGION; export DATAFOLDER; export TUMORBAM; export REFBAM; export PREFIX; export VARSCAN; export SAMTOOLS
+export GENOME; export CAPTURE_REGION; export DATAFOLDER; export TUMORBAM; 
+export REFBAM; export PREFIX; export VARSCAN; export SAMTOOLS
 
 hostname
 date
