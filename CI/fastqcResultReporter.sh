@@ -40,7 +40,7 @@ do
 		FIRST=false
 	else 
 		paste pb.meanseq.quality <(sed -n '/>>Per base sequence quality\t/{:a;n;/>>END_MODULE/b;p;ba}' $FQC | cut -f 2) > tempfile
-		cat tempfile > pb.meanseq.quality
+		cat tempfile > pb.seq.quality
 		
 		paste ps.quality.scores <(sed -n '/>>Per sequence quality scores\t/{:a;n;/>>END_MODULE/b;p;ba}' $FQC | cut -f 2) > tempfile
 		cat tempfile > ps.quality.scores
