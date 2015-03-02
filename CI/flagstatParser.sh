@@ -12,9 +12,10 @@ do
   		#if this is the first sample then print a header row
         if [[ $FIRST = true ]]; then
                 printf $HEADER > flagstat.results
+                FIRST=false
         fi
     # the name and summary resulst for each sample 1 row each
-	printf $FLAGFILE >> flagstat.results
+	printf "$FLAGFILE\t" >> flagstat.results
     cut -f 1 -d " " $FLAGFILE | tr "\n" "\t" >> flagstat.results
     printf "\n" >> flagstat.results
 done
