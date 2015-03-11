@@ -21,7 +21,7 @@ do
 		grep -n "Total Sequences" $FQC | cut -f 2 | tr "\n" "\t" >> fastqc.data
 		# GC percent
 		grep -n -m 1 "%GC" $FQC | cut -f 2 | sed -e 's/\n//' >> fastqc.data
-		printf "\n"  >fastqc.data
+		#printf "\n"  >fastqc.data
 
 		sed -n '/>>Per base sequence quality\t/{:a;n;/>>END_MODULE/b;p;ba}' $FQC | cut -f 1,2 > pb.seq.quality
 		
@@ -50,7 +50,7 @@ do
 		grep -n "Total Sequences" $FQC | cut -f 2 | tr "\n" "\t" >> fastqc.data
 		# GC percent
 		grep -n -m 1 "%GC" $FQC | cut -f 2 | sed -e 's/\n//' >> fastqc.data
-		printf "\n"  >>fastqc.data
+		#printf "\n"  >>fastqc.data
 
 		#checked 
 		paste pb.seq.quality <(sed -n '/>>Per base sequence quality\t/{:a;n;/>>END_MODULE/b;p;ba}' $FQC | cut -f 2) > tempfile
@@ -80,7 +80,7 @@ do
 		sed -n '/>>Per base sequence content\t/{:a;n;/>>END_MODULE/b;p;ba}' $FQC | cut -f 3 | tail -n +2 >> tempfile
 		sed -n '/>>Per base sequence content\t/{:a;n;/>>END_MODULE/b;p;ba}' $FQC | cut -f 4 | tail -n +2 >> tempfile
 		sed -n '/>>Per base sequence content\t/{:a;n;/>>END_MODULE/b;p;ba}' $FQC | cut -f 5 | tail -n +2 >> tempfile
-		paste pb.sequence.scores tempfile > tempfile2
+		paste pb.seq.GATC tempfile > tempfile2
 		cat tempfile2 > pb.seq.GATC
 
 	fi
@@ -88,3 +88,5 @@ done
 
 rm tempfile
 rm tempfile2
+mkdir Report
+mv pb.seq.quality ps.quality.scores pb.seq.GC pb.seq.N dup.seq.lev kmer.lev fastqc.data pb.seq.GATC Report
