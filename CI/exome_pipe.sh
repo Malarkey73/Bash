@@ -4,14 +4,14 @@ set -o errexit
 set -o pipefail
 
 #tools
-SAMTOOLS="/home/rmgzshd/samtools/samtools"
+SAMTOOLS="/home/rmgzshd/samtools-1.2/samtools"
 VARSCAN="/home/rmgzshd/VarScan/VarScan.v2.3.7.jar"
 BAMREADCOUNT="/home/rmgzshd/bam-readcount/bin/bam-readcount"
 FPFILTER="/home/rmgzshd/VarScan/fpfilter.pl"
 
 #places
 GENOME="/mnt/store1/GATK_BUNDLE_2.8_hg19/Homo_sapiens_assembly19.fasta"
-CAPTURE_REGION="/mnt/store1/WXS_CAPTURE_BEDS/whole_exome_agilent_1.1_refseq_plus_3_boosters.targetIntervals.bed"
+CAPTURE_REGION="/mnt/store1/WXS_CAPTURE_BEDS/SeqCap_EZ_Exome_v2.target.bed"
 
 #input args
 TUMORBAM=`echo $1`
@@ -19,6 +19,7 @@ REFBAM=`echo $2`
 # longest common prefix from the input BAMS
 # and remove any non-alphanumeric final chars e.g. TCGA-C5.A1MF- become TCGA-C5.A1MF
 PREFIX=`printf "%s\n%s\n" $TUMORBAM $REFBAM | sed -e 'N;s/^\(.*\).*\n\1.*$/\1/' | sed s'/[^a-zA-Z\d\s:]$//'` 
+echo $PREFIX
 
 export GENOME; export CAPTURE_REGION; export DATAFOLDER; export TUMORBAM; 
 export REFBAM; export PREFIX; export VARSCAN; export SAMTOOLS
@@ -32,7 +33,6 @@ $SAMTOOLS mpileup -A -B -C 50 -d 10000 -m 3 -F 0.0002 -q 20 -Q 20 \
 -f $GENOME \
 -l $CAPTURE_REGION \
 $TUMORBAM $REFBAM > MPILEUP.fifo &
-
 
 java -d64 -Xmx8g -jar $VARSCAN somatic MPILEUP.fifo $PREFIX \
 --mpileup 1 --min-coverage 8 --min-coverage-normal 10 --min-coverage-tumor 6 \

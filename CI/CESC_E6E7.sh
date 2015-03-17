@@ -12,5 +12,5 @@ done
 
 ls *.sam > samlist
 cat samlist | xargs cat >> HPV.sam
-rm *.sam
+rm -rf `cat samlist`
 rm samlist
