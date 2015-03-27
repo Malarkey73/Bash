@@ -26,22 +26,26 @@ export REFBAM; export PREFIX; export VARSCAN; export SAMTOOLS
 
 hostname
 date
-mkfifo MPILEUP.fifo
+# I changed this to $PREFIX.fifo so that I could run this script in parallel with another
+# i.e. there would be 2 separate named fifo
+mkfifo $PREFIX.fifo
 
+# th epileup is in a fifo so there is no intermediate file
 echo "piling up. \n"
 $SAMTOOLS mpileup -A -B -C 50 -d 10000 -m 3 -F 0.0002 -q 20 -Q 20 \
 -f $GENOME \
 -l $CAPTURE_REGION \
-$TUMORBAM $REFBAM > MPILEUP.fifo &
+$REFBAM $TUMORBAM > $PREFIX.fifo &
 
-java -d64 -Xmx8g -jar $VARSCAN somatic MPILEUP.fifo $PREFIX \
+# the inetrmediary pipe is fed to Varscan Sopmatic 
+java -d64 -Xmx8g -jar $VARSCAN somatic $PREFIX.fifo $PREFIX \
 --mpileup 1 --min-coverage 8 --min-coverage-normal 10 --min-coverage-tumor 6 \
 --min-var-freq 0.01 --min-freq-for-hom 0.75 --normal-purity 1 --p-value 0.99 \
 --somatic-p-value 0.05 --tumor-purity 0.5 --strand-filter 0
 
 wait
 echo "processing step 1. \n"
-rm MPILEUP.fifo
+rm $PREFIX.fifo
 java -d64 -Xmx8g -jar $VARSCAN processSomatic $PREFIX.snp &
 java -d64 -Xmx8qg -jar $VARSCAN processSomatic $PREFIX.indel &
 
@@ -50,8 +54,11 @@ echo "processing step 2. \n"
 
 grep Somatic $PREFIX.snp.Somatic | grep -v _ | awk '{print $1, "\t", $2, "\t", $2}' >  $PREFIX.snp.Somatic.pos
 $BAMREADCOUNT $TUMORBAM -q 20 -b 20 -f $GENOME -l $PREFIX.snp.Somatic.pos -w 1 > $PREFIX.snp.Somatic.rc 
-/usr/bin/perl $FPFILTER $PREFIX.snp.Somatic.pos $PREFIX.snp.Somatic.pos --output-basename $PREFIX.snp.Somatic
+/usr/bin/perl $FPFILTER $PREFIX.snp.Somatic $PREFIX.snp.Somatic.rc --output-basename $PREFIX.snp.Somatic
 
-wait
-rm *.fifo
+# this makes the input format ANNOVAR like
+awk  '{print $1,$2,$2,$3,$4}' $PREFIX.snp.Somatic.pass > temp
+temp > $PREFIX.snp.Somatic.pass
+rm temp
+
 echo "done"

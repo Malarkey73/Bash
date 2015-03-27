@@ -2,7 +2,7 @@
 # find *.bam | parallel 'bedtools -abam {} -b capture.bed -hist | grep ^all > {}.all.txt'
  
 # Get a list of the bedtools output files you'd like to read in
-print(files <- list.files(pattern="all.txt$"))
+(files <- list.files(pattern="all.txt$"))
  
 # Optional, create short sample names from the filenames. 
 # For example, in this experiment, my sample filenames might look like this:
@@ -10,8 +10,10 @@ print(files <- list.files(pattern="all.txt$"))
 # prefixToTrash-02.pe.on.pos.dedup.realigned.recalibrated.bam
 # prefixToTrash-03.pe.on.pos.dedup.realigned.recalibrated.bam
 # This regular expression leaves me with "samp01", "samp02", and "samp03" in the legend.
-print(labs <- paste("samp", gsub("prefixToTrash-0|\\.pe\\.on\\.pos\\.dedup\\.realigned\\.recalibrated\\.bam\\.cov\\.hist\\.txt\\.all\\.txt", "", files, perl=TRUE), sep=""))
- 
+
+(labs<- gsub(".bam.hist.all.txt", "", files))
+
+
 # Create lists to hold coverage and cumulative coverage for each alignment,
 # and read the data into these lists.
 cov <- list()
@@ -21,14 +23,9 @@ for (i in 1:length(files)) {
     cov_cumul[[i]] <- 1-cumsum(cov[[i]][,5])
 }
  
-# Pick some colors
-# Ugly:
-# cols <- 1:length(cov)
-# Prettier:
-# ?colorRampPalette
-# display.brewer.all()
 library(RColorBrewer)
-cols <- brewer.pal(length(cov), "Dark2")
+cols <- rainbow(length(cov))
+
  
 # Save the graph to a file
 png("exome-coverage-plots.png", h=1000, w=1000, pointsize=20)
