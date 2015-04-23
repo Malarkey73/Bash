@@ -23,13 +23,16 @@ export GENOME; export TUMORBAM; export REFBAM; export PREFIX; export VARSCAN; ex
 hostname
 date
 
-echo "creating raw copynumber file \n"
+echo "creating raw copynumber file"
 $SAMTOOLS mpileup -q 1 -f $GENOME $TUMORBAM $REFBAM   | 
 awk '{if($4 >= 6) print $0}' | 
 awk '{if($7 != 0) print $0}' | 
-java -d64 -Xmx8g -jar $VARSCAN copynumber $PREFIX -mpileup 1
+java -d64 -Xmx8g -jar $VARSCAN copynumber --output-file $PREFIX --mpileup 1
 
-echo "creating adjusted preliminary copynumber files \n"
-java -d64 -Xmx8g -jar $VARSCAN copyCaller output.copynumber --output-file $PREFIX.copynumber.called --output-homdel-file $PREFIX.copynumber.called.homdel
+# this last part is not needed for the sequenza pipeline
+#echo "creating adjusted preliminary copynumber files \n"
+#java -d64 -Xmx8g -jar $VARSCAN copyCaller output.copynumber --output-file $PREFIX.copynumber.called --output-homdel-file $PREFIX.copynumber.called.homdel
 
+mkdir -p SEQUENZA 
+mv $PREFIX.copynumber SEQUENZA
 echo "done $PREFIX"

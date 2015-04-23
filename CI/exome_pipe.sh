@@ -59,6 +59,14 @@ $BAMREADCOUNT $TUMORBAM -q 20 -b 20 -f $GENOME -l $PREFIX.snp.Somatic.pos -w 1 >
 # this makes the input format ANNOVAR like
 awk  '{print $1,$2,$2,$3,$4}' $PREFIX.snp.Somatic.pass > temp
 temp > $PREFIX.snp.Somatic.pass
+
 rm temp
+rm $PREFIX.snp.Somatic.pos
+rm $PREFIX.snp.Somatic.rc
+rm $PREFIX.snp.Somatic
+rm $PREFIX.snp.hc
+rm $PREFIX.snp.Germline.hc
+rm $PREFIX.snp.LOH*
+
 
 echo "done"
