@@ -47,7 +47,7 @@ wait
 echo "processing step 1. \n"
 rm $PREFIX.fifo
 java -d64 -Xmx8g -jar $VARSCAN processSomatic $PREFIX.snp &
-java -d64 -Xmx8qg -jar $VARSCAN processSomatic $PREFIX.indel &
+java -d64 -Xmx8g -jar $VARSCAN processSomatic $PREFIX.indel &
 
 wait
 echo "processing step 2. \n"
@@ -59,6 +59,7 @@ $BAMREADCOUNT $TUMORBAM -q 20 -b 20 -f $GENOME -l $PREFIX.snp.Somatic.pos -w 1 >
 # this makes the input format ANNOVAR like
 awk  '{print $1,$2,$2,$3,$4}' $PREFIX.snp.Somatic.pass > temp
 temp > $PREFIX.snp.Somatic.pass
+
 
 rm temp
 rm $PREFIX.snp.Somatic.pos
