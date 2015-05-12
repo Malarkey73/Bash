@@ -23,4 +23,5 @@ indel2$var[del]<- "-"
 indel2$end <-ifelse(indel2$ref=="-", indel2$position, indel2$position + (nchar(indel2$ref)-1))
 
 indelout<- cbind(indel2[,1:2], indel2$end, indel2[,3:4])
-write.table(indelout, paste0(file, ".2"), col.names=FALSE, row.names=FALSE, quote=FALSE)
+file <- gsub("hc", "pass", file)
+write.table(indelout, file, col.names=FALSE, row.names=FALSE, quote=FALSE)
