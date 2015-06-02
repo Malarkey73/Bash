@@ -21,5 +21,5 @@ mv *.hist.all.txt COVERAGE
 
 
 # NB There is an RScript on the same page that will view the results
-# ANd I have copied that R Script on my github RScipt page
+# And I have copied that R Script on my github RScipt page
 

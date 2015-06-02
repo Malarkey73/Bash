@@ -6,6 +6,8 @@
  
 # Optional, create short sample names from the filenames. 
 # For example, in this experiment, my sample filenames might look like this:
+#!/usr/bin/Rscript
+
 # prefixToTrash-01.pe.on.pos.dedup.realigned.recalibrated.bam
 # prefixToTrash-02.pe.on.pos.dedup.realigned.recalibrated.bam
 # prefixToTrash-03.pe.on.pos.dedup.realigned.recalibrated.bam
