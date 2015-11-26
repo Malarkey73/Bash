@@ -1,6 +1,6 @@
 #!/usr/bin/Rscript
 
-# nohup ./vscantosnnov.R NB2 5 0.05
+# nohup ./vscantosnnov.R NB2 5 0.1
 
 library(dplyr)
 args<-commandArgs(trailingOnly=TRUE)
@@ -42,7 +42,7 @@ in.tab<-
 var.tab<- rbind(in.tab, del.tab, snp.tab) %>%
   arrange(chrom, position)
 
-out <- var.tab[,c(1:2,24,3:4)]
+out <- var.tab[,c(1:2,24,3:4,5:6,9:11,15)]
 fileName <- paste0(prefix, ".ann.pass")
 write.table(out, file=fileName, col.names=FALSE, row.names=FALSE, quote=FALSE)
 
