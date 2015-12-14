@@ -1,0 +1,95 @@
+#!/bin/bash -l
+#$ -S /bin/bash
+## Time limit
+#$ -l h_rt=1:30:00
+## Memory requirements (h_vmem and them must match)
+#$ -l h_vmem=8G
+#$ -l tmem=8G
+#$ -l fastio=1
+#$ -l scratch0free=100G
+## Use the current working directory for running the job
+#$ -cwd
+
+
+# Paths
+BOWTIE2="/share/apps/genomics/bowtie2-2.2.6/bowtie2"
+BOWTIE2INDEX="/cluster/project6/blic_reference/Homo_sapiens/NCBI/GRCh38/Sequence/Bowtie2Index/genome"
+SAMTOOLS="/share/apps/genomics/samtools-1.2/bin/samtools"
+
+export BOWTIE2; export BOWTIE2INDEX
+
+
+# Args
+R1PREFIX=$1
+PAIRED=$2
+GZ=$3
+PREFIX=`echo $R1PREFIX | sed -e 's/.R1_001//g'`
+R2PREFIX=`echo $R1PREFIX | sed -e 's/R1_001/R2_001/g'`
+DATA_DIR=$PWD
+
+
+# These echo commands are for debugging. If there is a problem
+# then check these ar ecorrectly set in the script.oxxxxx
+# file produced
+echo "1 " $R1PREFIX
+echo "2 " $PAIRED
+echo "3 " $GZ
+echo "4 " $PREFIX
+echo "5 " $R2PREFIX
+echo "6 " $DATA_DIR
+
+
+# create new self scrubbing TMPDIR and DATA_DIR/QC for output
+mkdir -p /scratch0/$TMPDIR
+rmdir $TMPDIR
+ln -s /scratch0/$TMPDIR $TMPDIR
+mkdir -p $DATA_DIR/BAM
+
+# Do this if the fastq are single end
+if [ $PAIRED == 0 ]; then
+	rsync -aL $DATA_DIR/$R1PREFIX.fastq* $TMPDIR
+	cd $TMPDIR
+	# if not gzipped
+	if [ $GZ == 0 ]; then
+		$BOWTIE2 -p 12 -x $BOWTIE2INDEX -U $R1PREFIX.fastq | $SAMTOOLS view -u -o $PREFIX.bam -
+
+	fi
+	# if gzipped
+	if [ $GZ == 1 ]; then
+		$BOWTIE2 -p 12 -x $BOWTIE2INDEX -U $R1PREFIX.fastq.gz | $SAMTOOLS view -u -o $PREFIX.bam -
+	fi
+	wait
+	echo "7 " `ls`
+	$SAMTOOLS sort -m4G -@8 $PREFIX.bam $PREFIX.s
+	echo "8 " `ls`
+	rsync -a *.s.bam $DATA_DIR/BAM
+	
+fi
+
+# Or do this if the fastq are paired. This is not necessary
+# here for bowtie2 but many programs will require dual R1 & R2
+# input so this template handles pairs.
+
+
+if [ $PAIRED == 1 ]; then
+	rsync -aL $DATA_DIR/$R1PREFIX.fastq* $TMPDIR &
+    rsync -aL $DATA_DIR/$R2PREFIX.fastq* $TMPDIR &
+    wait
+    cd $TMPDIR
+    # if not gzipped
+	if [ $GZ == 0 ]; then
+    	$BOWTIE2 -p 12 -x $BOWTIE2INDEX -1 $R1PREFIX.fastq -2 $R2PREFIX.fastq | $SAMTOOLS view -u -o $PREFIX.bam -
+    	
+	fi
+	# if gzipped
+	if [ $GZ == 1 ]; then
+		$BOWTIE2 -p 12 -x $BOWTIE2INDEX -1 $R1PREFIX.fastq.gz -2 $R2PREFIX.fastq.gz | $SAMTOOLS view -u -o $PREFIX.bam -
+		
+	fi	
+	wait
+	echo "7 " `ls`
+	$SAMTOOLS sort -m4G -@8 $PREFIX.bam $PREFIX.s
+	echo "8 " `ls`
+	rsync -a *.s.bam $DATA_DIR/BAM
+fi
+

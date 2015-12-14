@@ -56,17 +56,18 @@ if [ $PAIRED == 0 ]; then
 	fi
 	# if gzipped
 	if [ $GZ == 1 ]; then
-		TRIMGALORE --fastqc --dont_gzip --phred33 $R1PREFIX.fastq
+		$TRIMGALORE --fastqc --dont_gzip --phred33 $R1PREFIX.fastq.gz
 	fi
-	rsync -a $R1PREFIX*.zip $DATA_DIR
-	rsync -a $R1PREFIX*.txt $DATA_DIR
-	rename _trimmed.fq .fastq $PREFIX_trimmed.fq
-	rsync -a $PREFIX*.fastq $DATA_DIR
+	echo `ls`
+	rsync -a $R1PREFIX*.zip $DATA_DIR/FASTQC
+	rsync -a $R1PREFIX*.txt $DATA_DIR/FASTQC
+	mv "$R1PREFIX"_trimmed.fq "$R1PREFIX".fastq
+	rsync -a $PREFIX*.fastq $DATA_DIR/FASTQC
 
 fi
 
 # Or do this if the fastq are paired. This is not necessary
-# here for FastQC but many programs will require dual R1 & R2
+# here for trimgalore/FastQC but many programs will require dual R1 & R2
 # input so this template handles pairs.
 # NB note the use of & to bg processes and speed stuff up a bit
 # NB note to the use of "wait" to make sure bg commands are done
@@ -79,17 +80,17 @@ if [ $PAIRED == 1 ]; then
     cd $TMPDIR
     # if not gzipped
 	if [ $GZ == 0 ]; then
-    	TRIMGALORE --fastqc --dont_gzip --phred33 --paired $R1PREFIX.fastq $R2PREFIX.fastq
+    	$TRIMGALORE --fastqc --dont_gzip --phred33 --paired $R1PREFIX.fastq $R2PREFIX.fastq
 	fi
 	# if gzipped
 	if [ $GZ == 1 ]; then
-		TRIMGALORE --fastqc --dont_gzip --phred33 --paired $R1PREFIX.fastq $R2PREFIX.fastq
+		$TRIMGALORE --fastqc --dont_gzip --phred33 --paired $R1PREFIX.fastq.gz $R2PREFIX.fastq.gz
 	fi	
-
-	rsync -a $PREFIX*.zip $DATA_DIR
-	rsync -a $PREFIX*.txt $DATA_DIR
-	mv $R1PREFIX_val_1.fq $R1PREFIX.fastq
-	mv $R2PREFIX_val_2.fq $R2PREFIX.fastq
-	rsync -a $PREFIX*.fastq $DATA_DIR
+	echo `ls`
+	rsync -a $PREFIX*.zip $DATA_DIR/FASTQC
+	rsync -a $PREFIX*.txt $DATA_DIR/FASTQC
+	mv "$R1PREFIX"_val_1.fq $R1PREFIX.fastq
+	mv "$R2PREFIX"_val_2.fq $R2PREFIX.fastq
+	rsync -a $PREFIX*.fastq $DATA_DIR/FASTQC
 fi
 
